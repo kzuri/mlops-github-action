@@ -1,0 +1,52 @@
+name: ci-cd-example
+on: 
+  workflow_dispatch:
+    inputs:
+      name:
+        required: false
+        default: "run"
+        description: "CI CD run for regression model"
+
+jobs:
+  run:
+    runs-on: [ubuntu-latest]
+    container: docker://dvcorg/cml-py3:latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Training run"
+        env:
+          repo_token: ${{ secrets.GITHUB_TOKEN }} $
+        run: |
+
+          pip install -r requirements.txt
+          python model.py
+
+          echo "## Model Metrics" > report.md
+          cat metrics.txt >> report.md
+
+          echo "\n ## Model performance plot" >> report.md
+
+          cml-publish model_results.png --md >> report.md
+          cmd-send-comment report.md
+
+      - name: Get changes
+        run: |
+          git status -uno
+
+      - uses: EndBug/add-and-commit@v7
+        with:
+          add: report.md metrics.txt model_results.png
+          author_name: CI-CD Pipeline run
+          author_email: pateldevarsh1206@gmail.com
+          message: "adding results from run"
+        
+    
+
+        
+          
+
+
+
+
+  
+
