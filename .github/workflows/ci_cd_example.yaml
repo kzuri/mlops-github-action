@@ -27,7 +27,7 @@ jobs:
           echo "\n ## Model performance plot" >> report.md
 
           cml-publish model_results.png --md >> report.md
-          cmd-send-comment report.md
+          cml-send-comment report.md
 
       - name: Get changes
         run: |
